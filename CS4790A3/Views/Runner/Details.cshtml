@@ -1,0 +1,100 @@
+﻿@model CS4790A3.Models.Runner
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Runner</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.firstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.firstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.firstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.firstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.lastName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.lastName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.suffix)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.suffix)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.anonymous)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.anonymous)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.phone)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.phone)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.tShirt)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.tShirt)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.emergencyName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.emergencyName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.emergencyPhone)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.emergencyPhone)
+        </dd>
+
+
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.runnerID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

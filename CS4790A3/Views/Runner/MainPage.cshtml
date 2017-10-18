@@ -1,0 +1,323 @@
+﻿@model CS4790A3.Models.RunnerLineup
+  
+@{
+    ViewBag.Title = "Main Page";
+
+}
+
+
+<style>
+    div {
+        color: darkred;
+    }
+
+
+    
+</style>
+
+
+
+<script>
+
+    //custom validation, because I lost a great amount of time on other methods of validation
+    var countedValues = 0;
+    var badValues = 0;
+
+    //make sure a row is either correct or empty, nothing else passes
+    function NasValid() {
+        countedValues = 0;
+        badValues = 0;
+
+        for (var i = 0; i < 10; i++) {
+            let v1 = document.getElementById("lineup_" + i + "__firstName");
+            let v2 = document.getElementById("lineup_" + i + "__lastName");
+            let v3 = document.getElementById("lineup_" + i + "__tShirt");
+            if (!checkRow(v1, v2, v3)) {
+
+                if (v1.value == "")
+                {
+                    v1.value = "";
+                    v1.placeholder = "Required";
+                    v1.style.backgroundColor = "gold";
+                } else {
+                    v1.style.backgroundColor = "white";
+                }
+
+                if (v2.value == "") {
+                    v2.value = "";
+                    v2.placeholder = "Required";
+                    v2.style.backgroundColor = "gold";
+                } else {
+                    v2.style.backgroundColor = "white";
+                }
+                if (v3.value == "N/A") {
+                    v3.style.backgroundColor = "gold";
+                } else {
+                    v3.style.backgroundColor = "white";
+                }
+
+                badValues++;
+
+            } else {
+                v1.style.backgroundColor = "white";
+                v2.style.backgroundColor = "white";
+                v3.style.backgroundColor = "white";
+                v1.placeholder = "";
+                v2.placeholder = "";
+                v3.placeholder = "";                
+            }
+        }
+    }
+
+    //only validate if the row has some input
+    function checkRow(one, two, three) {
+        var rege = /^[a-zA-Z\s]+$/
+        one.value.replace(" ", "");
+        two.value.replace(" ", "");
+
+        if (one.value != "" || two.value != "" || three.value != "N/A") {
+            countedValues++;
+            return one.value.match(rege) &&
+                two.value.match(rege) &&
+                three.value != "N/A";
+        }
+        else {
+            return true;
+        }
+    }
+
+    //validate number of runners
+    function checkNum() {
+
+       let x1 = document.getElementById("runner_numberOfChild");
+       let x2 = document.getElementById("runner_numberOfAdult");
+
+       if (x1.value == "") {
+           x1.value = "0";
+       }
+       if (x2.value == "") {
+           x2.value = "0";
+       }
+
+       let runnerTotal = parseInt(x1.value) + parseInt(x2.value)-1;
+       let result = (runnerTotal == countedValues);
+
+       if (!result) {
+           x1.style.backgroundColor = "gold";
+           x2.style.backgroundColor = "gold";
+
+       }
+       else {
+           x1.style.backgroundColor = "white";
+           x2.style.backgroundColor = "white";
+       }
+       return result;
+    }
+ 
+    //run every validation above disable submit button if fails
+    function finalState() {
+        NasValid();
+        checkNum();
+        let valid1 = (0 == badValues);       
+        let valid2 = checkNum();
+        let finalR = valid2 && valid1;
+        let Sub = document.getElementById("deButton");
+
+        Sub.disabled = !finalR;
+
+        Sub.style.backgroundColor = (!finalR) ? "grey" : "darkred";
+
+        return finalR;
+    }
+
+    document.onload = finalState();
+
+</script>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="container col-lg-12" >
+        <!--Runner-->
+        <div class="col-lg-6"> 
+            <h4>Runner</h4>
+            <div class="form-horizontal">
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.runner.firstName, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.runner.firstName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.runner.firstName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.runner.lastName, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.runner.lastName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.runner.lastName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.runner.suffix, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-sm-2">
+                        @Html.EditorFor(model => model.runner.suffix, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.runner.suffix, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.runner.anonymous, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-6">
+                        <div class="checkbox col-sm-6">
+                            @Html.CheckBoxFor(model => model.runner.anonymous)
+                            @Html.ActionLink("What is this?", null, null, null, new { title = "Select if you would like us to hide your name" })
+                            @Html.ValidationMessageFor(model => model.runner.anonymous, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.runner.phone, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.runner.phone, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.runner.phone, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.runner.email, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.runner.email, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.runner.email, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <!-- Make a loop-->
+                <div class="form-group">
+                    @Html.LabelFor(model => model.runner.tShirt, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-sm-3">
+                        @Html.DropDownListFor(
+                           model => Model.runner.tShirt, new List<SelectListItem>{
+                                 new SelectListItem{Text = "N/A", Value = null},
+                                 new SelectListItem{Text = "XS", Value = "xs"},
+                                 new SelectListItem{Text = "S", Value = "s"},
+                                 new SelectListItem{Text = "M", Value = "m"},
+                                 new SelectListItem{Text = "L", Value = "l"},
+                                 new SelectListItem{Text = "XL", Value = "xl"},
+                                 new SelectListItem{Text = "XXL", Value = "xxl"},
+                                }, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.runner.tShirt, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.runner.emergencyName, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.runner.emergencyName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.runner.emergencyName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.runner.emergencyPhone, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.runner.emergencyPhone, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.runner.emergencyPhone, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <br />
+                <br />
+                <div class="form-group row">
+                    <div class="col-lg-offset-4">
+                        <input id="deButton"   type="submit" value="Submit" class="btn btn-default" style="background-color:darkred; color:white;" />
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+
+        <!--Additional Runners-->
+        <div  class="col-lg-6" style="border:3px solid darkred; margin-top:3.5%">
+            <h4>Additional Runners</h4>
+            <div class="col-md-4">
+                @Html.Label("First Name")
+                @for (int i = 0; i < 10; i++)
+                {
+                    <div onchange="finalState()" class="form-group">
+                        @Html.EditorFor(model => Model.lineup[i].firstName, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                }
+
+            </div>
+
+            <div class="col-md-4">
+                @Html.Label("Last Name")
+                @for (int i = 0; i < 10; i++)
+                {
+                    <div onchange="finalState()"  class="form-group">
+                        @Html.EditorFor(model => Model.lineup[i].lastName, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                }
+            </div>
+
+            <div class="col-md-4">
+                @Html.Label("T-Shirt Size")
+                @for (int i = 0; i < 10; i++)
+                {
+                    <div onchange="finalState()"  class="form-group">
+                        @Html.DropDownListFor(
+        model => Model.lineup[i].tShirt, new List<SelectListItem>{
+                                 new SelectListItem{Text = "N/A", Value = null},
+                                 new SelectListItem{Text = "XS", Value = "xs"},
+                                 new SelectListItem{Text = "S", Value = "s"},
+                                 new SelectListItem{Text = "M", Value = "m"},
+                                 new SelectListItem{Text = "L", Value = "l"},
+                                 new SelectListItem{Text = "XL", Value = "xl"},
+                                 new SelectListItem{Text = "XXL", Value = "xxl"},
+             }, new { @class = "form-control" })
+                    </div>
+                }
+            </div>
+
+            <hr />
+            <div onchange="finalState()"  class="form-group row">
+                @Html.LabelFor(model => Model.runner.numberOfChild, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-sm-2">
+                    @Html.EditorFor(model => Model.runner.numberOfAdult, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.runner.numberOfAdult, "", new { @class = "text-danger" })
+
+                </div>
+            </div>
+
+            <div onchange="finalState()"  class="form-group row">
+                @Html.LabelFor(model => Model.runner.numberOfAdult, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-sm-2">
+                    @Html.EditorFor(model => Model.runner.numberOfChild, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.runner.numberOfChild, "", new { @class = "text-danger" })
+
+                </div>
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
